@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   constructor(private yamlDataService: YamlDataService) {}
   public ngOnInit() {
     this.data = this.yamlDataService
-      .fetchYaml(`/assets/testYaml.yaml`)
+      .fetchYaml(`assets/testYaml.yaml`)
       .subscribe((respose) => {
         console.log(respose);
       });
