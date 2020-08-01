@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  version: Version 0.5.0
+  title: Moments Rewards API
+  description: |-
+    The sections below provide reference documentation for the endpoints in Moments Rewards REST API.
+
+servers:
+  - url: "https://dnxr7vm27d.execute-api.us-east-1.amazonaws.com/prod/"
+    description: Reward API endpoint server basepath
+
+paths:
+  /GetRewardInfo:
+    post:
+      summary: Gets information about a reward to display to customer
+      description: "Retrieves the information"
+      operationId: GetRewardInfo
+      requestBody:
+        description: Submit the following parameters in the request body.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Reward_Request"
+      responses:
+        "200":
+          description: Response from the GetRewardInfo request
+        "400":
+          description: A required field in the request is null or empty.
+        "500":
+          description: The server encountered an unexpected error.
+components:
+  schemas:
+    Reward_Request:
+      required:
+        - appId
+        - momentId
+        - deviceType
+        - campaignId
+        - rewardGroupId
+      properties:
+        appId:
+          type: string
+          description: The application ID for which the rewards have been configured.
+          example: DEMO
+        momentId:
+          type: string
+          description: The moment ID that applies to the reward.
+          example: MomentsReward
+        deviceType:
+          type: string
+          description: The device (`Android` or `iOS`) for which the reward has been configured.
+          example: Android
+        campaignId:
+          type: string
+          description: The campaign ID associated with the reward.
+          example: DEMOCAMP1
+        rewardGroupId:
+          type: string
+          description: The reward group that should be used for the moment.
+          example: US
