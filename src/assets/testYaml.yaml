@@ -59,3 +59,31 @@ components:
           type: string
           description: The reward group that should be used for the moment.
           example: US
+    Reward2_Request:
+      required:
+        - appId
+        - momentId
+        - deviceType
+        - campaignId
+        - rewardGroupId
+      properties:
+        appId:
+          type: string
+          description: The application ID for which the rewards have been configured.
+          example: DEMO
+        momentId:
+          type: string
+          description: The moment ID that applies to the reward.
+          example: MomentsReward
+        deviceType:
+          type: string
+          description: The device (`Android` or `iOS`) for which the reward has been configured.
+          example: Android
+        campaignId:
+          type: string
+          description: The campaign ID associated with the reward.
+          example: DEMOCAMP1
+        rewardGroupId:
+          type: string
+          description: The reward group that should be used for the moment.
+          example: US
