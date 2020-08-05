@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { YamlDataService } from './yaml-data.service';
 import * as openApiModel from '../assets/jsondata.json';
-import {formModel} from './formmodel';
+import { formModel } from './formmodel';
 import { YamlToJson } from './convertData';
 @Component({
   selector: 'app-root',
@@ -11,6 +11,7 @@ import { YamlToJson } from './convertData';
 export class AppComponent implements OnInit {
   public subscription;
   public data;
+  public propertiesArray;
   public formdata: Array<formModel>;
   ymltoJson;
   constructor(private yamlDataService: YamlDataService) {}
@@ -21,21 +22,26 @@ export class AppComponent implements OnInit {
         this.data = new YamlToJson().getYamlObject(respose);
         this.getData(this.data);
       });
-    
   }
-  public getData(jData){
-      let parsedData = JSON.parse(jData);
-      let propertiesArray = Object.keys(parsedData.components.schemas.Reward_Request.properties);
-      let valuesArray = Object.values(parsedData.components.schemas.Reward_Request.properties);
-      let requiredFields = parsedData.components.schemas.Reward_Request.required;
-      console.log(propertiesArray);
-      console.log(valuesArray);
-      propertiesArray.forEach(item =>{
-        let model: formModel;
-        console.log(item);
-        model.propName = item;
-        this.formdata.push(model);
-      });
+  public getData(jData) {
+    let parsedData = JSON.parse(jData);
+    this.propertiesArray = Object.keys(
+      parsedData.components.schemas.Reward_Request.properties
+    );
+    let requiredFields = parsedData.components.schemas.Reward_Request.required;
+    console.log(this.propertiesArray);
+    this.formdata = [
+      {
+        propName: 'Name',
+        propRequired: true,
+        propType: 'string',
+      },
+      {
+        propName: 'ID',
+        propRequired: true,
+        propType: 'string',
+      },
+    ];
   }
   title = 'open-api-poc';
 }
