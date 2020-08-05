@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { YamlDataService } from './yaml-data.service';
-import * as openApiModel from '../assets/jsondata.json';
-import {formModel} from './formmodel';
+import { formModel } from './formmodel';
 import { YamlToJson } from './convertData';
+import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  constructor(private yamlDataService: YamlDataService) {}
   public subscription;
   public data;
+  public propertiesArray;
   public formdata: Array<formModel>;
+  public yamlInput = '';
   ymltoJson;
-  constructor(private yamlDataService: YamlDataService) {}
+  title = 'open-api-poc';
   public ngOnInit() {
     this.subscription = this.yamlDataService
       .fetchYaml(`testYaml.yaml`)
@@ -21,21 +24,31 @@ export class AppComponent implements OnInit {
         this.data = new YamlToJson().getYamlObject(respose);
         this.getData(this.data);
       });
-    
   }
-  public getData(jData){
-      let parsedData = JSON.parse(jData);
-      let propertiesArray = Object.keys(parsedData.components.schemas.Reward_Request.properties);
-      let valuesArray = Object.values(parsedData.components.schemas.Reward_Request.properties);
-      let requiredFields = parsedData.components.schemas.Reward_Request.required;
-      console.log(propertiesArray);
-      console.log(valuesArray);
-      propertiesArray.forEach(item =>{
-        let model: formModel;
-        console.log(item);
-        model.propName = item;
-        this.formdata.push(model);
-      });
+  public getData(jData) {
+    this.formdata = getPropertyArray(JSON.parse(jData).components.schemas);
   }
-  title = 'open-api-poc';
+  public yamldata() {
+    console.log(this.yamlInput);
+    this.data = new YamlToJson().validateYamlData(this.yamlInput);
+  }
+}
+
+function getPropertyArray(schemas) {
+  const propertyArr = [];
+  Object.keys(schemas).map((api) => {
+    Object.keys(schemas[api].properties).forEach((prop) => {
+      const model: formModel = {
+        propRequired: false,
+        propName: '',
+        propType: '',
+      };
+      model.propRequired =
+        schemas[api].required.indexOf(prop) !== -1 ? true : false;
+      model.propName = prop;
+      model.propType = schemas[api].properties[prop].type;
+      propertyArr.push(model);
+    });
+  });
+  return propertyArr;
 }
