@@ -1,5 +1,5 @@
 <h1>{{ title }}</h1>
 <div *ngFor="let prop of formdata" style="padding-bottom: 1rem;">
-  <label for="{{ prop.propName }}">{{ prop.propName }}</label>
+  <label for="{{ prop.propName }}">{{ prop.propName }}-----Required:{{prop.propRequired}}</label>
   <input type="text" id="{{ prop.propName }}" name="{{ prop.propName }}" />
 </div>

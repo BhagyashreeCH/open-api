@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { YamlDataService } from './yaml-data.service';
-import * as openApiModel from '../assets/jsondata.json';
 import { formModel } from './formmodel';
 import { YamlToJson } from './convertData';
 @Component({
@@ -9,12 +8,13 @@ import { YamlToJson } from './convertData';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  constructor(private yamlDataService: YamlDataService) {}
   public subscription;
   public data;
   public propertiesArray;
   public formdata: Array<formModel>;
   ymltoJson;
-  constructor(private yamlDataService: YamlDataService) {}
+  title = 'open-api-poc';
   public ngOnInit() {
     this.subscription = this.yamlDataService
       .fetchYaml(`testYaml.yaml`)
@@ -24,24 +24,26 @@ export class AppComponent implements OnInit {
       });
   }
   public getData(jData) {
-    let parsedData = JSON.parse(jData);
-    this.propertiesArray = Object.keys(
-      parsedData.components.schemas.Reward_Request.properties
-    );
-    let requiredFields = parsedData.components.schemas.Reward_Request.required;
-    console.log(this.propertiesArray);
-    this.formdata = [
-      {
-        propName: 'Name',
-        propRequired: true,
-        propType: 'string',
-      },
-      {
-        propName: 'ID',
-        propRequired: true,
-        propType: 'string',
-      },
-    ];
+    this.formdata = getPropertyArray(JSON.parse(jData).components.schemas);
   }
-  title = 'open-api-poc';
+}
+
+
+function getPropertyArray(schemas) {
+  const propertyArr = [];
+  Object.keys(schemas).map((api) => {
+    Object.keys(schemas[api].properties).forEach((prop) => {
+      const model: formModel = {
+        propRequired: false,
+        propName: '',
+        propType: '',
+      };
+      model.propRequired =
+        schemas[api].required.indexOf(prop) !== -1 ? true : false;
+      model.propName = prop;
+      model.propType = schemas[api].properties[prop].type;
+      propertyArr.push(model);
+    });
+  });
+  return propertyArr;
 }
