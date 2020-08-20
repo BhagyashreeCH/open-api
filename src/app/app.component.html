@@ -1,15 +1,6 @@
 <h1>{{ title }}</h1>
-<!-- <div *ngFor="let prop of formdata" style="padding-bottom: 1rem;">
-  <label for="{{ prop.propName }}"
-    >{{ prop.propName }}-----Required:{{ prop.propRequired }}</label
-  >
-  <input type="text" id="{{ prop.propName }}" name="{{ prop.propName }}" />
+
+<div style="height: 500px; width: '600px';">
+  <ngx-monaco-editor [options]="options" [model]="model"></ngx-monaco-editor>`
 </div>
-<div> -->
-<form #propertiesForm="ngForm" name="propertiesForm">
-  <div><textarea [(ngModel)]="yamlInput" name="properties"></textarea></div>
-</form>
-<div>
-  <button type="button" (click)="yamldata()">Data</button>
-</div>
-<!-- </div> -->
+<!-- <button (click)="geteditorval(code)">Get Editor Data</button> -->

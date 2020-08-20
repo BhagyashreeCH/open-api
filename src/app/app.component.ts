@@ -3,6 +3,8 @@ import { YamlDataService } from './yaml-data.service';
 import { formModel } from './formmodel';
 import { YamlToJson } from './convertData';
 import { NgForm } from '@angular/forms';
+import { NgxEditorModel } from 'ngx-monaco-editor';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,38 +19,20 @@ export class AppComponent implements OnInit {
   public yamlInput = '';
   ymltoJson;
   title = 'open-api-poc';
-  public ngOnInit() {
-    this.subscription = this.yamlDataService
-      .fetchYaml(`testYaml.yaml`)
-      .subscribe((respose) => {
-        this.data = new YamlToJson().getYamlObject(respose);
-        this.getData(this.data);
-      });
-  }
-  public getData(jData) {
-    this.formdata = getPropertyArray(JSON.parse(jData).components.schemas);
-  }
-  public yamldata() {
-    console.log(this.yamlInput);
-    this.data = new YamlToJson().validateYamlData(this.yamlInput);
-  }
-}
+  options = {
+    theme: 'vs-dark',
+  };
 
-function getPropertyArray(schemas) {
-  const propertyArr = [];
-  Object.keys(schemas).map((api) => {
-    Object.keys(schemas[api].properties).forEach((prop) => {
-      const model: formModel = {
-        propRequired: false,
-        propName: '',
-        propType: '',
-      };
-      model.propRequired =
-        schemas[api].required.indexOf(prop) !== -1 ? true : false;
-      model.propName = prop;
-      model.propType = schemas[api].properties[prop].type;
-      propertyArr.push(model);
-    });
-  });
-  return propertyArr;
+  jsonCode = ['{', '"p1": "v3",', '"p2": false', '}'].join('\n');
+
+  model: NgxEditorModel = {
+    value: this.jsonCode,
+    language: 'json',
+    uri: '',
+  };
+  public onInit(editor) {
+    let line = editor.getPosition();
+    console.log('line: ', line);
+  }
+  public ngOnInit() {}
 }
