@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { YamlDataService } from './yaml-data.service';
 import { formModel } from './formmodel';
 import { YamlToJson } from './convertData';
@@ -11,28 +11,58 @@ import { NgxEditorModel } from 'ngx-monaco-editor';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  constructor(private yamlDataService: YamlDataService) {}
+  constructor(
+    private yamlDataService: YamlDataService,
+    public changeDetectorRef: ChangeDetectorRef
+  ) {}
   public subscription;
-  public data;
-  public propertiesArray;
-  public formdata: Array<formModel>;
   public yamlInput = '';
-  ymltoJson;
-  title = 'open-api-poc';
-  options = {
+  public schema;
+  public data;
+  public title = 'open-api-poc';
+  public inputKeys;
+  public schemaKeys;
+  public missedKeys;
+  public options = {
     theme: 'vs-dark',
   };
 
-  jsonCode = ['{', '"p1": "v3",', '"p2": false', '}'].join('\n');
+  public jsonCode = '';
 
-  model: NgxEditorModel = {
+  public model: NgxEditorModel = {
     value: this.jsonCode,
-    language: 'json',
+    language: 'yaml',
     uri: '',
   };
-  public onInit(editor) {
-    let line = editor.getPosition();
-    console.log('line: ', line);
+  public getschema() {
+    this.schemaKeys = [];
+    this.schema = {
+      name: 'string',
+      surname: 'string',
+      middlename: 'string',
+      age: 'number',
+    };
+    this.schemaKeys = Object.keys(this.schema);
   }
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.getschema();
+  }
+  public getyamlinput(data1: any) {
+    this.missedKeys = [];
+    this.data = '';
+    console.log('pp', data1);
+    this.data = new YamlToJson().getYamlObject(data1);
+    this.data = JSON.parse(this.data);
+    this.inputKeys = Object.keys(this.data);
+    console.log('input keys', this.inputKeys);
+    console.log('schema keys', this.schemaKeys);
+    this.schemaKeys.forEach((item) => {
+      if (this.inputKeys.indexOf(item) === -1) {
+        this.missedKeys.push(item);
+      }
+    });
+    this.missedKeys = this.missedKeys.join();
+    this.changeDetectorRef.detectChanges();
+    alert('missed keys : ' + this.missedKeys);
+  }
 }

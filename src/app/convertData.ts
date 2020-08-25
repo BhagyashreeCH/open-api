@@ -13,10 +13,9 @@ const files = [];
 export class YamlToJson {
   constructor() {}
   public getYamlObject(file) {
-    console.log('', file);
     const doc = yaml.safeLoad(file, 'utf8');
-    console.log(doc);
     return JSON.stringify(doc, null, 2);
+    //return doc;
   }
 
   public validateYamlData(data) {

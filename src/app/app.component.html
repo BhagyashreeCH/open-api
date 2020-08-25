@@ -1,6 +1,15 @@
 <h1>{{ title }}</h1>
 
 <div style="height: 500px; width: '600px';">
-  <ngx-monaco-editor [options]="options" [model]="model"></ngx-monaco-editor>`
+  <!-- <ngx-monaco-editor
+    [options]="options"
+    [ngModel]="model"
+    (change)="getyamlinput(model)"
+  ></ngx-monaco-editor
+  >` -->
+  <textarea [(ngModel)]="yamlInput" name="properties"></textarea>
 </div>
-<!-- <button (click)="geteditorval(code)">Get Editor Data</button> -->
+<button (click)="getyamlinput(yamlInput)">Get Data</button>
+<div *ngif="missedKeys">
+  <p>Missed items are: {{ missedKeys }}</p>
+</div>
